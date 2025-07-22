@@ -242,7 +242,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // Update auth user in AuthBloc
             context.read<AuthBloc>().add(AuthStarted());
             _showSuccessSnackBar('Profile updated successfully');
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           } else if (state.status == UserStatus.failure) {
             _showErrorSnackBar(state.error ?? 'Failed to update profile');
           }

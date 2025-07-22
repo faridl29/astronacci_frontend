@@ -133,9 +133,15 @@ class _UserListScreenState extends State<UserListScreen> {
             },
           ),
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'profile') {
-                context.push('/profile');
+                final result = await context.push<bool>('/profile');
+
+                if (result == true) {
+                  context
+                      .read<UserBloc>()
+                      .add(const UsersLoadRequested(isRefresh: true));
+                }
               } else if (value == 'logout') {
                 _showLogoutDialog();
               }
