@@ -1,15 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
-import '../../services/api_service.dart';
+import '../../repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final ApiService _apiService;
+  final AuthRepository _authRepository = AuthRepository();
 
-  AuthBloc({required ApiService apiService})
-      : _apiService = apiService,
-        super(const AuthState()) {
+  AuthBloc() : super(const AuthState()) {
     on<AuthStarted>(_onAuthStarted);
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthRegisterRequested>(_onAuthRegisterRequested);
@@ -22,7 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      final user = await _apiService.getCurrentUser();
+      final user = await _authRepository.getCurrentUser();
       emit(state.copyWith(
         status: AuthStatus.authenticated,
         user: user,
@@ -39,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
-      final authResponse = await _apiService.login(
+      final authResponse = await _authRepository.login(
         email: event.email,
         password: event.password,
       );
@@ -75,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
-      final authResponse = await _apiService.register(
+      final authResponse = await _authRepository.register(
         name: event.name,
         email: event.email,
         password: event.password,
@@ -114,7 +112,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      await _apiService.logout();
+      await _authRepository.logout();
     } catch (e) {
       // Continue with logout even if API call fails
     } finally {
@@ -133,7 +131,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
-      await _apiService.forgotPassword(email: event.email);
+      await _authRepository.forgotPassword(email: event.email);
       emit(state.copyWith(isLoading: false));
     } catch (e) {
       String errorMessage = 'Failed to send reset link';

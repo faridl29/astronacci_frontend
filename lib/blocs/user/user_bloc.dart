@@ -2,16 +2,14 @@ import 'package:astronacci/models/pagination.dart';
 import 'package:astronacci/models/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
-import '../../services/api_service.dart';
+import '../../repositories/user_repository.dart';
 import 'user_event.dart';
 import 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final ApiService _apiService;
+  final UserRepository _userRepository = UserRepository();
 
-  UserBloc({required ApiService apiService})
-      : _apiService = apiService,
-        super(const UserState()) {
+  UserBloc() : super(const UserState()) {
     on<UsersLoadRequested>(_onUsersLoadRequested);
     on<UsersSearchRequested>(_onUsersSearchRequested);
     on<UserDetailRequested>(_onUserDetailRequested);
@@ -39,7 +37,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
 
     try {
-      final result = await _apiService.getUsers(
+      final result = await _userRepository.getUsers(
         page: event.page,
         perPage: 10,
       );
@@ -50,6 +48,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final allUsers = event.page == 1 || event.isRefresh
           ? users
           : [...state.users, ...users];
+
+      print('total user: ${allUsers.length}');
 
       emit(state.copyWith(
         status: UserStatus.success,
@@ -97,7 +97,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
 
     try {
-      final result = await _apiService.searchUsers(
+      final result = await _userRepository.searchUsers(
         query: event.query,
         page: event.page,
         perPage: 10,
@@ -142,7 +142,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(status: UserStatus.loading));
 
     try {
-      final user = await _apiService.getUserById(event.userId);
+      final user = await _userRepository.getUserById(event.userId);
       emit(state.copyWith(
         status: UserStatus.success,
         selectedUser: user,
@@ -173,7 +173,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(status: UserStatus.loading));
 
     try {
-      final updatedUser = await _apiService.updateProfile(
+      final updatedUser = await _userRepository.updateProfile(
         name: event.name,
         email: event.email,
         phone: event.phone,
