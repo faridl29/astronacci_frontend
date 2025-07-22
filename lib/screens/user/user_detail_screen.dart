@@ -60,7 +60,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   Widget _buildUserDetail(User user) {
     return CustomScrollView(
       slivers: [
-        // App Bar with User Avatar
         SliverAppBar(
           expandedHeight: 300,
           pinned: true,
@@ -82,7 +81,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 60),
-                  // Avatar
                   Container(
                     width: 150,
                     height: 150,
@@ -121,7 +119,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Name
                   Text(
                     user.name,
                     style: GoogleFonts.poppins(
@@ -132,7 +129,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  // Email
                   Text(
                     user.email,
                     style: GoogleFonts.poppins(
@@ -145,8 +141,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             ),
           ),
         ),
-
-        // User Details
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(24),

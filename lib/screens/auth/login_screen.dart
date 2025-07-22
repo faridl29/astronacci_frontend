@@ -219,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () =>
-                                        context.go('/forgot-password'),
+                                        context.push('/forgot-password'),
                                     child: Text(
                                       'Forgot Password?',
                                       style: GoogleFonts.poppins(
@@ -260,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => context.go('/register'),
+                              onTap: () => context.push('/register'),
                               child: Text(
                                 'Sign Up',
                                 style: GoogleFonts.poppins(

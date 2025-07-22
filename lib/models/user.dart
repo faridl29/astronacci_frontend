@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class User extends Equatable {
   final int id;
@@ -59,7 +60,7 @@ class User extends Equatable {
 
   String get avatarUrl {
     if (avatar != null && avatar!.isNotEmpty) {
-      return 'http://127.0.0.1:8000/storage/avatars/$avatar';
+      return '${dotenv.env['BASE_URL']}/storage/avatars/$avatar';
     }
     return 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(name)}&color=7F9CF5&background=EBF4FF';
   }

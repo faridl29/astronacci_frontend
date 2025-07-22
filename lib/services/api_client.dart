@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app.dart';
 
 class ApiClient {
-  static const String baseUrl = 'http://127.0.0.1:8000/api/v1';
+  static final String baseUrl = '${dotenv.env['BASE_URL']}/api/v1';
   late Dio _dio;
 
   static final ApiClient _instance = ApiClient._internal();
