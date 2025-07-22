@@ -212,7 +212,7 @@ class _UserListScreenState extends State<UserListScreen> {
                       final user = state.users[index];
                       return UserCard(
                         user: user,
-                        onTap: () => context.push('/user/${user.id}'),
+                        onTap: () => context.go('/user/${user.id}'),
                       );
                     },
                   ),

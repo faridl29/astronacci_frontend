@@ -75,4 +75,22 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<void> resetPassword({
+    required String email,
+    required String resetCode,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      await _apiClient.post('/auth/reset-password', data: {
+        'email': email,
+        'reset_code': resetCode,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

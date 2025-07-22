@@ -20,16 +20,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     UsersLoadRequested event,
     Emitter<UserState> emit,
   ) async {
+    if (state.isLoadingMore) return;
+
     if (event.isRefresh) {
       emit(state.copyWith(
         status: UserStatus.loading,
         users: [],
         hasReachedMax: false,
+        isLoadingMore: false,
         searchQuery: null,
       ));
     } else if (state.hasReachedMax) {
       return;
-    } else if (event.page == 1) {
+    } else if (event.page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
       emit(state.copyWith(
         status: UserStatus.loading,
         searchQuery: null,
@@ -49,14 +54,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           ? users
           : [...state.users, ...users];
 
-      print('total user: ${allUsers.length}');
-
       emit(state.copyWith(
         status: UserStatus.success,
         users: allUsers,
         pagination: pagination,
         hasReachedMax: !pagination.hasNextPage,
         error: null,
+        isLoadingMore: false,
       ));
     } catch (e) {
       String errorMessage = 'Failed to load users';
@@ -72,6 +76,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(
         status: UserStatus.failure,
         error: errorMessage,
+        isLoadingMore: false,
       ));
     }
   }

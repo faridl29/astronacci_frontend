@@ -233,7 +233,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:astronacci/blocs/auth/auth_state.dart';
+import 'package:astronacci/screens/auth/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,17 +23,14 @@ class AppRouter {
       final isAuthenticated = authState.status == AuthStatus.authenticated;
       final isLoading = authState.status == AuthStatus.unknown;
 
-      // Show splash while loading
       if (isLoading && state.uri.toString() == '/splash') {
         return null;
       }
 
-      // Redirect to login if not authenticated
       if (!isAuthenticated && !_isAuthRoute(state.uri.toString())) {
         return '/login';
       }
 
-      // Redirect to home if authenticated and on auth route
       if (isAuthenticated && _isAuthRoute(state.uri.toString())) {
         return '/home';
       }
@@ -57,6 +55,13 @@ class AppRouter {
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final email = state.uri.queryParameters['email'] ?? '';
+          return ResetPasswordScreen(email: email);
+        },
+      ),
+      GoRoute(
         path: '/home',
         builder: (context, state) => const UserListScreen(),
       ),
@@ -75,7 +80,13 @@ class AppRouter {
   );
 
   static bool _isAuthRoute(String location) {
-    return ['/login', '/register', '/forgot-password', '/splash']
-        .contains(location);
+    final uri = Uri.parse(location);
+    return [
+      '/login',
+      '/register',
+      '/forgot-password',
+      '/reset-password',
+      '/splash'
+    ].contains(uri.path);
   }
 }

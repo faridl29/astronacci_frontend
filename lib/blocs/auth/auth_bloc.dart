@@ -13,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthRegisterRequested>(_onAuthRegisterRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
     on<AuthForgotPasswordRequested>(_onAuthForgotPasswordRequested);
+    on<AuthResetPasswordRequested>(_onAuthResetPasswordRequested); // Add this
   }
 
   Future<void> _onAuthStarted(
@@ -135,6 +136,42 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(isLoading: false));
     } catch (e) {
       String errorMessage = 'Failed to send reset link';
+
+      if (e is DioException && e.response != null) {
+        final responseData = e.response!.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('message')) {
+          errorMessage = responseData['message'];
+        }
+      }
+
+      emit(state.copyWith(
+        error: errorMessage,
+        isLoading: false,
+      ));
+    }
+  }
+
+  Future<void> _onAuthResetPasswordRequested(
+    AuthResetPasswordRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, error: null));
+
+    try {
+      await _authRepository.resetPassword(
+        email: event.email,
+        resetCode: event.resetCode,
+        password: event.password,
+        passwordConfirmation: event.passwordConfirmation,
+      );
+
+      emit(state.copyWith(
+        status: AuthStatus.passwordResetSuccess,
+        isLoading: false,
+      ));
+    } catch (e) {
+      String errorMessage = 'Password reset failed';
 
       if (e is DioException && e.response != null) {
         final responseData = e.response!.data;

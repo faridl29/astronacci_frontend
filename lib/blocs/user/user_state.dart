@@ -12,6 +12,7 @@ class UserState extends Equatable {
   final String? error;
   final bool hasReachedMax;
   final String? searchQuery;
+  final bool isLoadingMore;
 
   const UserState({
     this.status = UserStatus.initial,
@@ -21,17 +22,18 @@ class UserState extends Equatable {
     this.error,
     this.hasReachedMax = false,
     this.searchQuery,
+    this.isLoadingMore = false,
   });
 
-  UserState copyWith({
-    UserStatus? status,
-    List<User>? users,
-    User? selectedUser,
-    Pagination? pagination,
-    String? error,
-    bool? hasReachedMax,
-    String? searchQuery,
-  }) {
+  UserState copyWith(
+      {UserStatus? status,
+      List<User>? users,
+      User? selectedUser,
+      Pagination? pagination,
+      String? error,
+      bool? hasReachedMax,
+      String? searchQuery,
+      bool? isLoadingMore}) {
     return UserState(
       status: status ?? this.status,
       users: users ?? this.users,
@@ -40,6 +42,7 @@ class UserState extends Equatable {
       error: error,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchQuery: searchQuery ?? this.searchQuery,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -51,6 +54,7 @@ class UserState extends Equatable {
         pagination,
         error,
         hasReachedMax,
-        searchQuery
+        searchQuery,
+        isLoadingMore
       ];
 }
